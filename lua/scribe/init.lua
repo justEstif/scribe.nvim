@@ -1,43 +1,40 @@
+-- https://github.com/Ostralyan/scribe.nvim
 local M = {}
-local cfg = {}
+local config = {}
 
-M.setup = function(user_cfg)
-  local default_cfg = {
-    file_ext = 'md',
-    directory = '~/notes/',
-    default_file = 'scribe',
-  }
+local create_folder = function()
+	local dir_exists = vim.fn.isdirectory(config.directory) ~= 0
 
-  -- Override setup args with arguments passed by the user
-  cfg = default_cfg
-  cfg = vim.tbl_extend("force", default_cfg, user_cfg)
-
-  os.execute('mkdir -p ' .. cfg['directory'])
-
-  if cfg['file_ext']:sub(1, 1) ~= '.' then
-    cfg['file_ext'] = '.' .. cfg['file_ext']
-  end
+	if dir_exists == false then
+		os.execute("mkdir -p " .. config.directory)
+	end
 end
 
-M.open = function(file_name)
-  if file_name == nil then
-    file_name = cfg['default_file']
-  end
-  vim.cmd('e ' .. cfg['directory'] .. file_name .. cfg['file_ext'])
+local create_file = function(file_name)
+	create_folder()
+	vim.cmd("e " .. config.directory .. file_name .. config.file_ext)
 end
 
-M.find = function()
-	require("telescope.builtin").find_files({
-		prompt_title = " Find Notes",
-		path_display = { "smart" },
-		cwd = cfg['directory'],
-		layout_strategy = "horizontal",
-		layout_config = { preview_width = 0.65, width = 0.75 },
-	})
+M.open = function()
+	vim.ui.input({ prompt = "Open/create note: " }, function(file_name)
+		if file_name == "" then
+			create_file(config.default_file_name)
+		elseif file_name == nil then
+			print("nil value provided; no file created")
+			return
+		else
+			create_file(file_name)
+		end
+	end)
 end
 
-M.get_config = function()
-
+M.setup = function(user_args)
+	local default_config = {
+		directory = vim.fn.getcwd() .. "/notes/",
+		file_ext = ".md",
+		default_file_name = "index",
+	}
+	config = vim.tbl_extend("force", default_config, user_args)
 end
 
 return M
