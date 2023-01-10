@@ -45,7 +45,7 @@ Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 ```lua
 return require('packer').startup(function(use)
   use 'nvim-telescope/telescope.nvim', tag = '0.1.0',
-  use 'Ostralyan/scribe.nvim'
+  use 'justEstif/scribe.nvim'
 end)
 ```
 
@@ -75,7 +75,7 @@ nnoremap <leader>sf :ScribeFind<cr>
 ### Default setup
 ```lua
 -- Default values
--- { 
+-- {
 --   directory = '~/notes',
 --   file_ext = 'md',
 --   default_file = 'scribe'
@@ -85,8 +85,8 @@ require('scribe').setup{}
 
 ### Custom setup with project root as default directory
 ```lua
-require('scribe').setup{ 
-  directory = './notes',
+require('scribe').setup{
+  directory = './notes/',
   file_ext = '.txt',
   default_file = 'scribe'
 }
