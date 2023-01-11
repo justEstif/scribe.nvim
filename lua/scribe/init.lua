@@ -2,6 +2,12 @@
 local M = {}
 M.config = {}
 
+local default_config = {
+	directory = "/notes/",
+	file_ext = ".md",
+	default_file_name = "index",
+}
+
 local create_file = function(file_name)
 	vim.cmd("e " .. vim.fn.getcwd() .. M.config.directory .. file_name .. M.config.file_ext)
 end
@@ -20,12 +26,10 @@ M.open = function()
 end
 
 M.setup = function(user_args)
-	local default_config = {
-		directory = "/notes/",
-		file_ext = ".md",
-		default_file_name = "index",
-	}
 	M.config = vim.tbl_extend("force", default_config, user_args)
+	vim.api.nvim_create_user_command("ScribeOpen", function()
+		M.open()
+	end, {})
 end
 
 return M
